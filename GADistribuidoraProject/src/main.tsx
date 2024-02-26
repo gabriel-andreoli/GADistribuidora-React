@@ -6,11 +6,12 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import Login from './pages/Login/Login.tsx'
 import ClientList from './pages/Client/ClientList.tsx'
 import ClientDetail from './pages/Client/ClientDetail.tsx'
+import { AppRoutes } from '../utils/routes/AppRoutes.ts'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: AppRoutes.LOGIN,
     element: <Login/>
   }
   // },

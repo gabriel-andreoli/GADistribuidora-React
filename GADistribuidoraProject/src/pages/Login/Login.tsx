@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Login.scss'
 import { FaFacebook, FaInstagram, FaTwitter } from 'react-icons/fa';
 import { FaGoogle } from "react-icons/fa";
+import Input from '../../components/Input';
 
 const Login = () => {
+  const [ name, setName ] = useState("");
+  const [ surname, setSurname ] = useState("");
+
   return (
     <div className='container-login'>
       <section className="background-radial-gradient overflow-hidden">
@@ -34,27 +38,21 @@ const Login = () => {
                   <form>
                     <div className="row">
                       <div className="col-md-6 mb-4">
-                        <div className="form-outline">
-                          <input type="text" id="form3Example1" className="form-control" />
-                          <label className="form-label" htmlFor="form3Example1">Nome</label>
-                        </div>
+                        <Input type={"text"} name={name} id={name} label="Nome" setValue={setName} />
                       </div>
                       <div className="col-md-6 mb-4">
-                        <div className="form-outline">
-                          <input type="text" id="form3Example2" className="form-control" />
-                          <label className="form-label" htmlFor="form3Example2">Sobrenome</label>
-                        </div>
+                        <Input type={"text"} name={surname} id={surname} label="Sobrenome" setValue={setSurname} />
                       </div>
                     </div>
 
                     <div className="form-outline mb-4">
-                      <input type="email" id="form3Example3" className="form-control" />
                       <label className="form-label" htmlFor="form3Example3">Email</label>
+                      <input type="email" id="form3Example3" className="form-control" />
                     </div>
 
                     <div className="form-outline mb-4">
-                      <input type="password" id="form3Example4" className="form-control" />
                       <label className="form-label" htmlFor="form3Example4">Senha</label>
+                      <input type="password" id="form3Example4" className="form-control" />
                     </div>
 
                     <div className="form-check d-flex justify-content-center mb-4">
