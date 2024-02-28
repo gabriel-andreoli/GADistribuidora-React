@@ -3,10 +3,38 @@ import './Login.scss'
 import { FaFacebook, FaInstagram, FaTwitter } from 'react-icons/fa';
 import { FaGoogle } from "react-icons/fa";
 import Input from '../../components/Input';
+import { Checkbox, FormControlLabel, TextField } from '@mui/material';
+import AppButton from '../../components/AppButton';
+import { ApiRoutes } from '../../../utils/routes/ApiRoutes';
+import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
+import { AppRoutes } from '../../../utils/routes/AppRoutes';
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const [ name, setName ] = useState("");
   const [ surname, setSurname ] = useState("");
+  const [ email, setEmail ] = useState("");
+  const [ password, setPassword ] = useState("");
+
+  async function handleLogin(){
+    const body = {
+      email: email,
+      password: password
+    }
+    try{
+      const response = await axios.post(ApiRoutes.LOGIN, body);
+      clearFields();
+    }catch(error){
+      console.error('Erro ao enviar dados:', error);
+    }
+  }
+
+  function clearFields(){
+    setName("");
+    setEmail("");
+  }
 
   return (
     <div className='container-login'>
@@ -36,38 +64,37 @@ const Login = () => {
               <div className="card bg-glass">
                 <div className="card-body px-4 py-5 px-md-5">
                   <form>
-                    <div className="row">
+                    {/* <div className="row">
                       <div className="col-md-6 mb-4">
-                        <Input type={"text"} name={name} id={name} label="Nome" setValue={setName} />
+                        <TextField label="Nome" variant="standard" fullWidth onChange={(event: React.ChangeEvent<HTMLInputElement>) => setName(event.target.value)}/>
                       </div>
                       <div className="col-md-6 mb-4">
-                        <Input type={"text"} name={surname} id={surname} label="Sobrenome" setValue={setSurname} />
+                        <TextField label="Sobrenome" variant="standard" fullWidth onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSurname(event.target.value)}/>
                       </div>
+                    </div> */}
+
+                    <div className="form-outline mb-4">
+                      <TextField label="Email" variant="standard" fullWidth onChange={(event: React.ChangeEvent<HTMLInputElement>) => setEmail(event.target.value)}/>
                     </div>
 
                     <div className="form-outline mb-4">
-                      <label className="form-label" htmlFor="form3Example3">Email</label>
-                      <input type="email" id="form3Example3" className="form-control" />
-                    </div>
-
-                    <div className="form-outline mb-4">
-                      <label className="form-label" htmlFor="form3Example4">Senha</label>
-                      <input type="password" id="form3Example4" className="form-control" />
+                      <TextField label="Senha" variant="standard" type="password" fullWidth onChange={(event: React.ChangeEvent<HTMLInputElement>) => setPassword(event.target.value)}/>
                     </div>
 
                     <div className="form-check d-flex justify-content-center mb-4">
-                      <input className="form-check-input me-2" type="checkbox" value="" id="form2Example33" checked />
-                      <label className="form-check-label" htmlFor="form2Example33">
-                        Receber novidades por email
-                      </label>
+                      <FormControlLabel
+                      value="end"
+                      control={<Checkbox />}
+                      label="Receber novidades por email"
+                      labelPlacement="end"
+                      />
                     </div>
 
-                    <button type="submit" className="btn btn-primary btn-block mb-4 w-100">
-                      Logar
-                    </button>
-                    <button type="submit" className="btn btn-primary btn-block mb-4 w-100">
-                      Criar conta
-                    </button>
+                    <AppButton text="Logar" width="100" action={handleLogin} />
+                    
+                    <Link to={AppRoutes.CREATE_ACCOUNT}>
+                      <AppButton text="Criar conta" width="100" action={undefined}/>
+                    </Link>
 
                     <div className="text-center">
                       <p>Ou faça login com:</p>

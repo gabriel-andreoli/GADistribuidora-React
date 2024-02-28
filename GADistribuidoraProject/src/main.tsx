@@ -8,11 +8,16 @@ import ClientList from './pages/Client/ClientList.tsx'
 import ClientDetail from './pages/Client/ClientDetail.tsx'
 import { AppRoutes } from '../utils/routes/AppRoutes.ts'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import CreateAccount from './pages/CreateAccount/CreateAccount.tsx'
 
 const router = createBrowserRouter([
   {
     path: AppRoutes.LOGIN,
     element: <Login/>
+  },
+  {
+    path: AppRoutes.CREATE_ACCOUNT,
+    element: <CreateAccount/>
   }
   // },
   // {
