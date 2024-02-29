@@ -9,6 +9,7 @@ import { ApiRoutes } from '../../../utils/routes/ApiRoutes';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppRoutes } from '../../../utils/routes/AppRoutes';
+import BackGroundLogin from '../../components/BackGroundLogin';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -32,8 +33,8 @@ const Login = () => {
   }
 
   function clearFields(){
-    setName("");
     setEmail("");
+    setPassword("");
   }
 
   return (
@@ -41,21 +42,7 @@ const Login = () => {
       <section className="background-radial-gradient overflow-hidden">
         <div className="container px-4 py-5 px-md-5 text-center text-lg-start my-5">
           <div className="row gx-lg-5 align-items-center mb-5">
-            <div className="col-lg-6 mb-5 mb-lg-0" style={{ zIndex: 10 }}>
-              <h1 className="my-5 display-5 fw-bold ls-tight" style={{ color: 'hsl(218, 81%, 95%)' }}>
-                A melhor ferramenta <br />
-                <span style={{ color: 'hsl(218, 81%, 75%)' }}>para o seu negócio</span>
-              </h1>
-              <p className="mb-4 opacity-70" style={{ color: 'hsl(218, 81%, 85%)' }}>
-                Gerenciar um negócio de bebidas nunca foi tão simples.
-              </p>
-              <p className="mb-4 opacity-70" style={{ color: 'hsl(218, 81%, 85%)' }}>
-                Com nossa plataforma, você tem controle total sobre suas vendas, estoque e logística de entrega, tudo em um só lugar.
-              </p>
-              <p className="mb-4 opacity-70" style={{ color: 'hsl(218, 81%, 85%)' }}>
-                Com funcionalidades robustas e uma interface intuitiva, facilitamos a gestão do seu negócio para que você possa se concentrar no que realmente importa: atender seus clientes.
-              </p>
-            </div>
+            <BackGroundLogin/>
 
             <div className="col-lg-6 mb-5 mb-lg-0 position-relative">
               <div id="radius-shape-1" className="position-absolute rounded-circle shadow-5-strong"></div>
@@ -64,30 +51,12 @@ const Login = () => {
               <div className="card bg-glass">
                 <div className="card-body px-4 py-5 px-md-5">
                   <form>
-                    {/* <div className="row">
-                      <div className="col-md-6 mb-4">
-                        <TextField label="Nome" variant="standard" fullWidth onChange={(event: React.ChangeEvent<HTMLInputElement>) => setName(event.target.value)}/>
-                      </div>
-                      <div className="col-md-6 mb-4">
-                        <TextField label="Sobrenome" variant="standard" fullWidth onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSurname(event.target.value)}/>
-                      </div>
-                    </div> */}
-
                     <div className="form-outline mb-4">
                       <TextField label="Email" variant="standard" fullWidth onChange={(event: React.ChangeEvent<HTMLInputElement>) => setEmail(event.target.value)}/>
                     </div>
 
                     <div className="form-outline mb-4">
                       <TextField label="Senha" variant="standard" type="password" fullWidth onChange={(event: React.ChangeEvent<HTMLInputElement>) => setPassword(event.target.value)}/>
-                    </div>
-
-                    <div className="form-check d-flex justify-content-center mb-4">
-                      <FormControlLabel
-                      value="end"
-                      control={<Checkbox />}
-                      label="Receber novidades por email"
-                      labelPlacement="end"
-                      />
                     </div>
 
                     <AppButton text="Logar" width="100" action={handleLogin} />
