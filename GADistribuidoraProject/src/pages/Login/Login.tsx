@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Login.scss'
 import { FaFacebook, FaInstagram, FaTwitter } from 'react-icons/fa';
 import { FaGoogle } from "react-icons/fa";
@@ -10,31 +10,64 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppRoutes } from '../../../utils/routes/AppRoutes';
 import BackGroundLogin from '../../components/BackGroundLogin';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const navigate = useNavigate();
 
-  const [ name, setName ] = useState("");
-  const [ surname, setSurname ] = useState("");
-  const [ email, setEmail ] = useState("");
-  const [ password, setPassword ] = useState("");
+  const [ loginPayload, setLoginPayload ] = useState({
+    email: '',
+    password: ''
+  });
 
-  async function handleLogin(){
-    const body = {
-      email: email,
-      password: password
+  const [ formErrorMessage , setFormErrorMessage ] = useState("");
+  
+  async function handleLogin(event: React.FormEvent<HTMLFormElement>){
+    event.preventDefault();
+    if(!isValidFormDataInputs()){
+      return;
     }
+
     try{
-      const response = await axios.post(ApiRoutes.LOGIN, body);
-      clearFields();
+      const response = await axios.post(ApiRoutes.LOGIN, loginPayload);
+      if(!response.data.sucess){
+        toast(response.data.errors[0]);
+      }
     }catch(error){
       console.error('Erro ao enviar dados:', error);
+    }finally{
+      setLoginPayload({ email: '', password: '' });
     }
   }
 
-  function clearFields(){
-    setEmail("");
-    setPassword("");
+  const isValidFormDataInputs = (): boolean => {
+    if(loginPayload.email === '' || loginPayload.password === ''){
+      setFormErrorMessage("Por favor, preencha todos os campos.");
+      return false;
+    }
+
+    const regexToValidEmail: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    let isValidEmail: boolean = regexToValidEmail.test(loginPayload.email);
+    if(!isValidEmail){
+      setFormErrorMessage("O email é inválido.");
+      return false;
+    }
+    return true;
+  }
+
+  useEffect(() => {
+    if (formErrorMessage !== '') {
+      toast.error(formErrorMessage);
+    }
+  }, [formErrorMessage]);
+
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setLoginPayload(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
   }
 
   return (
@@ -50,19 +83,19 @@ const Login = () => {
 
               <div className="card bg-glass">
                 <div className="card-body px-4 py-5 px-md-5">
-                  <form>
+                  <form onSubmit={handleLogin}>
                     <div className="form-outline mb-4">
-                      <TextField label="Email" variant="standard" fullWidth onChange={(event: React.ChangeEvent<HTMLInputElement>) => setEmail(event.target.value)}/>
+                      <TextField label="Email" variant="standard" name='email' value={loginPayload.email} fullWidth onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event)}/>
                     </div>
 
                     <div className="form-outline mb-4">
-                      <TextField label="Senha" variant="standard" type="password" fullWidth onChange={(event: React.ChangeEvent<HTMLInputElement>) => setPassword(event.target.value)}/>
+                      <TextField label="Senha" variant="standard" name='password' type="password" value={loginPayload.password} fullWidth onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event)}/>
                     </div>
 
-                    <AppButton text="Logar" width="100" action={handleLogin} />
+                    <AppButton text="Logar" width="100" typeButton="submit" action={undefined}/>
                     
                     <Link to={AppRoutes.CREATE_ACCOUNT}>
-                      <AppButton text="Criar conta" width="100" action={undefined}/>
+                      <AppButton text="Criar conta" width="100" typeButton="button" action={undefined}/>
                     </Link>
 
                     <div className="text-center">
