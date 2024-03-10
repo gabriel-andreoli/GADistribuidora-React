@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Checkbox, FormControlLabel, TextField } from '@mui/material';
+import { Button, Checkbox, FormControlLabel, TextField } from '@mui/material';
 import AppButton from '../../components/AppButton';
 import { ApiRoutes } from '../../../utils/routes/ApiRoutes';
 import axios from 'axios';
@@ -184,7 +184,7 @@ const CreateAccount = () => {
                       />
                     </div>
                     
-                    <AppButton text="Criar conta" width="100" action={CreateAccount}/>
+                    <Button variant='contained' size='medium' fullWidth className='mb-4' onClick={handleCreateAccount}>Criar conta</Button>
                   </form>
                 </div>
               </div>

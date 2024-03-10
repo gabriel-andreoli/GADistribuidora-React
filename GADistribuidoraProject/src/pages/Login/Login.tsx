@@ -3,7 +3,7 @@ import './Login.scss'
 import { FaFacebook, FaInstagram, FaTwitter } from 'react-icons/fa';
 import { FaGoogle } from "react-icons/fa";
 import Input from '../../components/Input';
-import { Checkbox, FormControlLabel, TextField } from '@mui/material';
+import { Button, Checkbox, FormControlLabel, TextField } from '@mui/material';
 import AppButton from '../../components/AppButton';
 import { ApiRoutes } from '../../../utils/routes/ApiRoutes';
 import axios from 'axios';
@@ -11,6 +11,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AppRoutes } from '../../../utils/routes/AppRoutes';
 import BackGroundLogin from '../../components/BackGroundLogin';
 import { toast } from 'react-toastify';
+import CustomButton from '../../components/CustomizedButton';
+import CustomizedButton from '../../components/CustomizedButton';
+import ButtonApp from '../../components/ButtonApp';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -69,6 +72,7 @@ const Login = () => {
       ...prevState,
       [name]: value
     }));
+    setFormErrorMessage('');
   }
 
   return (
@@ -93,10 +97,10 @@ const Login = () => {
                       <TextField label="Senha" variant="standard" name='password' type="password" value={loginPayload.password} fullWidth onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event)}/>
                     </div>
 
-                    <AppButton text="Logar" width="100" typeButton="submit" action={undefined}/>
+                    <Button variant='contained' size='medium' fullWidth className='mb-4'>Logar</Button>
                     
                     <Link to={AppRoutes.CREATE_ACCOUNT}>
-                      <AppButton text="Criar conta" width="100" typeButton="button" action={undefined}/>
+                      <Button variant='contained' size='medium' fullWidth className='mb-3'>Criar conta</Button>
                     </Link>
 
                     <div className="text-center">
