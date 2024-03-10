@@ -25,6 +25,7 @@ const Login = () => {
   async function handleLogin(event: React.FormEvent<HTMLFormElement>){
     event.preventDefault();
     if(!isValidFormDataInputs()){
+      setLoginPayload({ email: '', password: '' });
       return;
     }
 

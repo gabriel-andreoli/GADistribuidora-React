@@ -7,87 +7,90 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AppRoutes } from '../../../utils/routes/AppRoutes';
 import { Utils } from '../../../utils/Utils';
 import BackGroundLogin from '../../components/BackGroundLogin';
+import { RestService } from '../../Services/RestService';
 
 const CreateAccount = () => {
   const navigate = useNavigate();
 
-  const [ name, setName ] = useState("");
-  const [ surname, setSurname ] = useState("");
-  const [ email, setEmail ] = useState("");
-  const [ password, setPassword ] = useState("");
-  const [ confirmPassword, setConfirmPassword ] = useState("");
-
-  const [ nameError, setNameError ] = useState("");
-  const [ surnameError, setSurnameError ] = useState("");
-  const [ emailError, setEmailError ] = useState("");
-  const [ passwordError, setPasswordError ] = useState("");
-  const [ confirmPasswordError, setConfirmPasswordError ] = useState("");
+  const [ payloadCreateAccount, setPayloadCreateAccount ] = useState({
+    name: '',
+    surname: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+  
+  const [ inputErrors, setInputErrors ] = useState({
+    nameError: '',
+    surnameError: '',
+    emailError: '',
+    passwordError: '',
+    confirmPasswordError: ''
+  });
 
   async function handleCreateAccount(){
-    const nameToBody = `${name.trim()} ${surname.trim()}`;
+    const nameToBody = `${payloadCreateAccount.name.trim()} ${payloadCreateAccount.surname.trim()}`;
     const body = {
       name: nameToBody,
-      confirmPassword: confirmPassword,
-      email: email,
-      password: password
+      confirmPassword: payloadCreateAccount.confirmPassword,
+      email: payloadCreateAccount.email,
+      password: payloadCreateAccount.password
     }
-    try{
-      const response = await axios.post(ApiRoutes.CREATE_ACCOUNT, body);
-      clearFields();
-    }catch(error){
-      console.error('Erro ao enviar dados:', error);
-    }
+    await RestService.POST(ApiRoutes.CREATE_ACCOUNT, body);
+    clearFields();
   }
 
   function clearFields(){
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
-    setName("");
-    setSurname("");
+    setPayloadCreateAccount({
+      name: '',
+      surname: '',
+      email: '',
+      password: '',
+      confirmPassword: ''
+    });
 
-    setEmailError("");
-    setPasswordError("");
-    setConfirmPasswordError("");
-    setNameError("");
-    setSurnameError("");
+    setInputErrors({
+      nameError: '',
+      surnameError: '',
+      emailError: '',
+      passwordError: '',
+      confirmPasswordError: ''
+    });
   }
 
-  enum FieldsCreateAccount{
-    Name = "name",
-    Surname = "surname",
-    Email = "email",
-    Password = "password",
-    ConfirmPassword = "confirmPassword"
+  const validateField = (event: React.FocusEvent<HTMLInputElement>) : void => {
+    const { name, value } = event.target;
+
+    if(value === ''){
+      setInputErrorWithNameOfInputAndErrorMessage(name, 'Preencha um valor');
+      return;
+    }
+
+    if (name === 'email' && !Utils.IsValidEmail(value)) {        
+      setInputErrorWithNameOfInputAndErrorMessage(name, 'Email inválido');
+    }else if (name === 'password'){
+      setInputErrorWithNameOfInputAndErrorMessage(name, Utils.ValidatePasswordAndReturnErrorMessage(value));
+    }else if (name === 'confirmPassword'){
+      if(!Utils.AreEquals(value, payloadCreateAccount.password)){
+        setInputErrorWithNameOfInputAndErrorMessage(name, 'As senhas não conferem');
+      }
+    }
+    setInputErrorWithNameOfInputAndErrorMessage(name, '');
+  }
+
+  const setInputErrorWithNameOfInputAndErrorMessage = (name: string, msgError: string) : void => {
+    setInputErrors(prevState => ({
+      ...prevState,
+      [`${name}Error`]: msgError
+    }));
   }
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) : void{
-    const { id, value } = event.target;
-    let inputValue = "";
-    switch(id){
-      case FieldsCreateAccount.Name:{
-        inputValue = Utils.validadeBasicAndSetValues(value, setName, setNameError);
-        break;
-      }
-      case FieldsCreateAccount.Surname:{
-        inputValue = Utils.validadeBasicAndSetValues(value, setSurname, setSurnameError);
-        break;
-      }
-      case FieldsCreateAccount.Email:{
-        inputValue = Utils.validadeBasicAndSetValues(value, setEmail, setEmailError);
-        break;
-      }
-      case FieldsCreateAccount.Password:{
-        inputValue = Utils.validadeBasicAndSetValues(value, setPassword, setPasswordError);
-        break;
-      }
-      case FieldsCreateAccount.ConfirmPassword:{
-        inputValue = Utils.validadeBasicAndSetValues(value, setConfirmPassword, setConfirmPassword);
-        break;
-      }
-      default:
-        break;
-    }
+    const { name, value } = event.target;
+    setPayloadCreateAccount((prevPayloadCreateAccount) => ({
+      ...prevPayloadCreateAccount, 
+      [name]: value
+    }));
   }
 
   return (
@@ -109,9 +112,11 @@ const CreateAccount = () => {
                         <TextField
                           label="Nome"
                           variant="standard"
-                          error={!!nameError}
-                          helperText={nameError}
-                          id={FieldsCreateAccount.Name}
+                          error={!!inputErrors.nameError}
+                          helperText={inputErrors.nameError}
+                          name='name'
+                          value={payloadCreateAccount.name}
+                          onBlur={(event: React.FocusEvent<HTMLInputElement>) => validateField(event)}
                           fullWidth onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event)}
                         />
                       </div>
@@ -119,7 +124,11 @@ const CreateAccount = () => {
                         <TextField
                           label="Sobrenome"
                           variant="standard"
-                          id={FieldsCreateAccount.Surname}
+                          error={!!inputErrors.surnameError}
+                          helperText={inputErrors.surnameError}
+                          name='surname'
+                          value={payloadCreateAccount.surname}
+                          onBlur={(event: React.FocusEvent<HTMLInputElement>) => validateField(event)}
                           fullWidth onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event)}
                         />
                       </div>
@@ -129,7 +138,11 @@ const CreateAccount = () => {
                       <TextField
                         label="Email"
                         variant="standard"
-                        id={FieldsCreateAccount.Email}
+                        error={!!inputErrors.emailError}
+                        helperText={inputErrors.emailError}
+                        name='email'
+                        value={payloadCreateAccount.email}
+                        onBlur={(event: React.FocusEvent<HTMLInputElement>) => validateField(event)}
                         fullWidth onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event)}
                       />
                     </div>
@@ -138,8 +151,12 @@ const CreateAccount = () => {
                       <TextField
                         label="Senha"
                         variant="standard"
+                        error={!!inputErrors.passwordError}
+                        helperText={inputErrors.passwordError}
                         type="password"
-                        id={FieldsCreateAccount.Password}
+                        name='password'
+                        value={payloadCreateAccount.password}
+                        onBlur={(event: React.FocusEvent<HTMLInputElement>) => validateField(event)}
                         fullWidth onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event)}
                       />
                     </div>
@@ -148,8 +165,12 @@ const CreateAccount = () => {
                       <TextField
                         label="Confirme sua senha"
                         variant="standard"
+                        error={!!inputErrors.confirmPasswordError}
+                        helperText={inputErrors.confirmPasswordError}
                         type="password"
-                        id={FieldsCreateAccount.ConfirmPassword}
+                        name='confirmPassword'
+                        value={payloadCreateAccount.confirmPassword}
+                        onBlur={(event: React.FocusEvent<HTMLInputElement>) => validateField(event)}
                         fullWidth onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event)}
                       />
                     </div>
