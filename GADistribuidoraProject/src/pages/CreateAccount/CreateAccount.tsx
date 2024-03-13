@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Button, Checkbox, FormControlLabel, TextField } from '@mui/material';
-import AppButton from '../../components/AppButton';
 import { ApiRoutes } from '../../../utils/routes/ApiRoutes';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
@@ -8,9 +7,11 @@ import { AppRoutes } from '../../../utils/routes/AppRoutes';
 import { Utils } from '../../../utils/Utils';
 import BackGroundLogin from '../../components/BackGroundLogin';
 import { RestService } from '../../Services/RestService';
+import { useRestService } from '../../Contexts/RestServiceContext';
 
-const CreateAccount = () => {
+const CreateAccount  = () => {
   const navigate = useNavigate();
+  const _restService = useRestService<any>();
 
   const [ payloadCreateAccount, setPayloadCreateAccount ] = useState({
     name: '',
@@ -36,7 +37,7 @@ const CreateAccount = () => {
       email: payloadCreateAccount.email,
       password: payloadCreateAccount.password
     }
-    await RestService.POST(ApiRoutes.CREATE_ACCOUNT, body);
+    await _restService.POST(ApiRoutes.CREATE_ACCOUNT, body);
     clearFields();
   }
 

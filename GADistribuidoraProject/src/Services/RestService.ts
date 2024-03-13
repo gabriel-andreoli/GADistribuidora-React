@@ -1,21 +1,43 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
+import { toast } from 'react-toastify';
 
-export class RestService {
-    public static GET = async (url: string, params = {}) => {
+export class RestService<T> {
+    public async GET (url: string, params = {}) {
     try {
-        const response = await axios.get(url, { params });
+        const response : AxiosResponse<ApiResponse<T>> = await axios.get<ApiResponse<T>>(url, { params });
+        await this.HandleResponse(response);
         return response.data;
     } catch (error) {
-        throw error; 
+        await this.HandleException();
     }
     };
 
-    public static POST = async (url: string, data = {}) => {
+    public async POST (url: string, data = {}){
     try {
         const response = await axios.post(url, data);
+        await this.HandleResponse(response);
         return response.data;
     } catch (error) {
-        throw error;
+        await this.HandleException();
     }
     };
+
+    private async HandleResponse<T>(response: AxiosResponse<ApiResponse<T>>): Promise<void>{
+        var dataResult = response.data;
+        if(!dataResult.success){
+            dataResult.errors.forEach((erro) => {
+                toast.error(erro);
+            });
+        }
+    }
+
+    private async HandleException() : Promise<void>{
+        toast.error('Ops, entre em contato com o suporte');
+    }
+}
+
+interface ApiResponse<T>{
+    success: boolean,
+    data: T,
+    errors: string[]
 }
