@@ -65,14 +65,17 @@ const CreateAccount = () => {
       setInputErrorWithNameOfInputAndErrorMessage(name, 'Preencha um valor');
       return;
     }
-
+    
     if (name === 'email' && !Utils.IsValidEmail(value)) {        
       setInputErrorWithNameOfInputAndErrorMessage(name, 'Email inválido');
+      return;
     }else if (name === 'password'){
       setInputErrorWithNameOfInputAndErrorMessage(name, Utils.ValidatePasswordAndReturnErrorMessage(value));
+      return;
     }else if (name === 'confirmPassword'){
       if(!Utils.AreEquals(value, payloadCreateAccount.password)){
         setInputErrorWithNameOfInputAndErrorMessage(name, 'As senhas não conferem');
+        return;
       }
     }
     setInputErrorWithNameOfInputAndErrorMessage(name, '');
