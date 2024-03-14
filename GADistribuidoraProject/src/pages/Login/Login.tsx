@@ -11,12 +11,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AppRoutes } from '../../../utils/routes/AppRoutes';
 import BackGroundLogin from '../../components/BackGroundLogin';
 import { toast } from 'react-toastify';
-import CustomButton from '../../components/CustomizedButton';
-import CustomizedButton from '../../components/CustomizedButton';
-import ButtonApp from '../../components/ButtonApp';
+import { useRestService } from '../../Contexts/RestServiceContext';
 
 const Login = () => {
   const navigate = useNavigate();
+  const _restService = useRestService<any>();
 
   const [ loginPayload, setLoginPayload ] = useState({
     email: '',
@@ -25,27 +24,19 @@ const Login = () => {
 
   const [ formErrorMessage , setFormErrorMessage ] = useState("");
   
-  async function handleLogin(event: React.FormEvent<HTMLFormElement>){
+  async function handleLogin(event: any){
     event.preventDefault();
     if(!isValidFormDataInputs()){
-      setLoginPayload({ email: '', password: '' });
+      clearFields();
       return;
     }
 
-    try{
-      const response = await axios.post(ApiRoutes.LOGIN, loginPayload);
-      if(!response.data.sucess){
-        toast(response.data.errors[0]);
-      }
-    }catch(error){
-      console.error('Erro ao enviar dados:', error);
-    }finally{
-      setLoginPayload({ email: '', password: '' });
-    }
+    await _restService.POST(ApiRoutes.LOGIN, loginPayload);
+    clearFields();
   }
 
   const isValidFormDataInputs = (): boolean => {
-    if(loginPayload.email === '' || loginPayload.password === ''){
+    if(loginPayload.email === '' || loginPayload.password === ''){      
       setFormErrorMessage("Por favor, preencha todos os campos.");
       return false;
     }
@@ -59,9 +50,14 @@ const Login = () => {
     return true;
   }
 
+  function clearFields(){
+    setLoginPayload({ email: '', password: '' });
+  }
+
   useEffect(() => {
     if (formErrorMessage !== '') {
       toast.error(formErrorMessage);
+      setFormErrorMessage('');
     }
   }, [formErrorMessage]);
 
@@ -97,7 +93,7 @@ const Login = () => {
                       <TextField label="Senha" variant="standard" name='password' type="password" value={loginPayload.password} fullWidth onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleChange(event)}/>
                     </div>
 
-                    <Button variant='contained' size='medium' fullWidth className='mb-4'>Logar</Button>
+                    <Button variant='contained' size='medium' fullWidth className='mb-4' onClick={(event) => handleLogin(event)}>Logar</Button>
                     
                     <Link to={AppRoutes.CREATE_ACCOUNT}>
                       <Button variant='contained' size='medium' fullWidth className='mb-3'>Criar conta</Button>

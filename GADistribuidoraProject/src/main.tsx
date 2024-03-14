@@ -53,13 +53,9 @@ const restService = new RestService();
 // )
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <RouterProvider router={router}>
-      <RestServiceContext.Provider value={restService}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </RestServiceContext.Provider>
-    </RouterProvider>
+    <RestServiceContext.Provider value={restService}>
+      <RouterProvider router={router}/>
+        <App />
+    </RestServiceContext.Provider>
   </React.StrictMode>
 );
-
